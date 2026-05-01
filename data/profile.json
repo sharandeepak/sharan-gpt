@@ -1,0 +1,153 @@
+{
+  "candidate": {
+    "name": "Sharan Deepak R B",
+    "phone": "+91 9940579219",
+    "email": "sharandeepak32@gmail.com",
+    "location": "Chennai, India",
+    "links": {
+      "github": "Github",
+      "linkedin": "LinkedIn",
+      "leetcode": "Leetcode"
+    },
+    "headline": "Backend-focused Software Engineer with 3 years of experience building and scaling 0→1 product features for 300,000+ active users.",
+    "summary": "Backend-focused Software Engineer with strong experience in backend architecture, API design, database modeling, performance optimization, and end-to-end ownership of production systems. Experienced in building scalable employee engagement products, mentoring small teams, integrating third-party systems, and using AI tools to improve engineering workflows."
+  },
+  "experience": [
+    {
+      "company": "SurveySparrow",
+      "role": "Software Developer",
+      "location": "Chennai, India",
+      "startDate": "June 2023",
+      "endDate": "Present",
+      "highlights": [
+        "Led backend development for employee engagement products used by 300,000+ active users across 250+ paying customers.",
+        "Supported enterprise deployments serving up to 50,000 employees.",
+        "Increased backend repository AI Agent Readiness from 0% to 85% by designing LLM-friendly rules, hooks, and sub-agent workflows.",
+        "Led internal sessions to help engineers automate day-to-day development tasks using LLMs.",
+        "Built and launched the One-on-Ones module from 0→1 by owning architecture, API design, database schema, backend services, and production rollout.",
+        "Developed a Reward Marketplace with redemption workflows, voucher lifecycle management, and third-party vendor integrations.",
+        "Reduced dashboard loading time by 60% by replacing SQL-heavy workflows with optimized Elasticsearch queries.",
+        "Increased portal engagement by approximately 40% by building Slack-based workflows powered by webhooks and event-driven backend integrations.",
+        "Mentored engineers in a 3-person team by guiding implementation, reviewing contributions, and driving delivery across mobile and backend initiatives."
+      ]
+    },
+    {
+      "company": "Growfin",
+      "role": "Backend Development Intern",
+      "location": "Chennai, India",
+      "startDate": "Jan 2023",
+      "endDate": "June 2023",
+      "highlights": [
+        "Built an internal SDK to streamline communication with CRM services.",
+        "Improved integration consistency across backend workflows.",
+        "Developed cron-based automation, queue-driven processing, and cache-backed services to improve reliability and efficiency of scheduled backend operations."
+      ]
+    },
+    {
+      "company": "Zoho Corporation",
+      "role": "Summer Intern",
+      "location": "Chennai, India",
+      "startDate": "May 2022",
+      "endDate": "June 2022",
+      "highlights": []
+    }
+  ],
+  "education": [
+    {
+      "degree": "BTech in Information Technology",
+      "institution": "Easwari Engineering College",
+      "startYear": "2019",
+      "endYear": "2023",
+      "cgpa": "9.0/10.0"
+    }
+  ],
+  "skills": {
+    "programmingLanguages": ["TypeScript", "C++", "Java", "Dart", "JavaScript"],
+    "backend": ["Spring Boot", "REST API", "API Design", "Backend Architecture", "Database Modeling"],
+    "databasesAndSearch": ["PostgreSQL", "Redis", "Elasticsearch", "SQL", "OpenSearch"],
+    "frontendAndMobile": ["HTML", "CSS", "Flutter"],
+    "tools": ["Docker", "Git"],
+    "computerScience": ["DBMS", "OOPS", "Data Structures"],
+    "aiEngineering": [
+      "LLM-friendly repository setup",
+      "AI agent readiness",
+      "Sub-agent workflows",
+      "Rules and hooks for AI-assisted development"
+    ]
+  },
+  "projects": [
+    {
+      "name": "Goal Assist",
+      "links": {
+        "github": "Github Link",
+        "demo": "Demo Url"
+      },
+      "startDate": "Aug 2025",
+      "endDate": "Oct 2025",
+      "description": "AI-powered productivity platform that helps developers communicate progress clearly while giving managers a structured view to review, prioritize, and track work.",
+      "highlights": [
+        "Built an AI-powered productivity platform to solve team execution and progress visibility problems.",
+        "Designed a manager dashboard that centralizes priorities, task progress, and execution signals.",
+        "Automated status tracking through an MCP-powered workflow that captures developer activity and converts it into structured updates.",
+        "Reduced manual task filling and repetitive standup reporting."
+      ]
+    },
+    {
+      "name": "TicketWise",
+      "links": {
+        "github": "Github Link"
+      },
+      "startDate": "Aug 2023",
+      "endDate": "Oct 2023",
+      "description": "Online ticket reservation system focused on concurrency handling, request reliability, and scalable backend service design.",
+      "highlights": [
+        "Built backend services for an online ticket reservation system.",
+        "Improved request handling under concurrent traffic using message-queue-based asynchronous processing.",
+        "Reduced query latency by integrating OpenSearch-based retrieval patterns."
+      ]
+    }
+  ],
+  "certifications": [
+    {
+      "year": "2022",
+      "name": "Full Stack Development with React & Node JS",
+      "issuer": "GeeksforGeeks",
+      "link": "Certificate Link"
+    },
+    {
+      "year": "2021",
+      "name": "Art of Ethical Hacking Through Programming",
+      "issuer": "SelfMadeNinja",
+      "link": "Certificate Link"
+    },
+    {
+      "year": "2021",
+      "name": "The Complete Android Development Bootcamp",
+      "issuer": "Udemy",
+      "link": "Certificate Link"
+    }
+  ],
+  "honorsAndAwards": [
+    {
+      "year": "2023",
+      "title": "Bug Buster Award",
+      "organization": "Growfin"
+    },
+    {
+      "year": "2022",
+      "title": "Gold Medal from IG of Southern Railways",
+      "organization": "Southern Railways",
+      "reason": "Developed a smart attendance system"
+    },
+    {
+      "year": "2022",
+      "title": "284th rank out of 24,841 participants",
+      "organization": "CodeChef March Long Challenge"
+    },
+    {
+      "year": "2020",
+      "title": "3rd position out of 147 teams",
+      "organization": "Tamil Nadu Police Hackathon"
+    }
+  ]
+}
