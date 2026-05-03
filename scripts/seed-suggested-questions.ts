@@ -1,4 +1,5 @@
-import "dotenv/config";
+import { config } from "dotenv";
+config({ path: ".env.local" });
 import { FieldValue, getFirestore } from "../lib/firebase-admin";
 
 type SeedQuestion = {
@@ -12,7 +13,7 @@ const QUESTIONS: SeedQuestion[] = [
   {
     question: "Who is Sharan Deepak?",
     answer:
-      "Sharan Deepak R B is a backend-focused software engineer based in Chennai with 3 years of experience as a Software Developer at SurveySparrow. He ships 0 to 1 product features for employee engagement products serving 300,000+ active users across 250+ paying customers. His positioning is Senior Product Developer / Backend-focused Full Stack Developer.",
+      "Sharan Deepak R B is a backend-focused software engineer based in Chennai with 3 years of experience, currently working as a Software Developer at SurveySparrow. He ships 0 to 1 product features for employee engagement products serving 300,000+ active users across 250+ paying customers.",
     category: "overview",
     priority: 1,
   },
@@ -61,7 +62,7 @@ const QUESTIONS: SeedQuestion[] = [
   {
     question: "Has he built mobile apps?",
     answer:
-      "His mobile stack on the resume is Flutter and Dart. At SurveySparrow he mentored a 3-person team spanning mobile and backend, coordinating feature delivery across both surfaces. He also holds a Complete Android Development Bootcamp certification (Udemy, 2021).",
+      "His mobile stack includes Flutter and Dart. At SurveySparrow he mentored a 3-person team spanning mobile and backend, guiding implementation, reviewing contributions, and driving delivery. He also holds a Complete Android Development Bootcamp certification (Udemy, 2021).",
     category: "projects",
     priority: 8,
   },
@@ -75,9 +76,23 @@ const QUESTIONS: SeedQuestion[] = [
   {
     question: "How can I contact him?",
     answer:
-      "The best way to reach Sharan is by email at sharandeepak32@gmail.com. The page also surfaces Email me and Contact me buttons for direct outreach, and his phone number on the resume is +91 9940579219 (he is based in Chennai, India).",
+      "The best way to reach Sharan is by email at sharandeepak32@gmail.com. The page also surfaces Email me and Contact me buttons for direct outreach, and his phone number on the resume is +91 9940579219. He is based in Chennai, India, prefers Chennai, Bangalore, or Hyderabad, has a negotiable 15 to 30 day notice period, and is open to relocation based on the opportunity.",
     category: "contact",
     priority: 10,
+  },
+  {
+    question: "Why should we hire him?",
+    answer:
+      "Sharan brings strong backend expertise along with end-to-end ownership. He does not just build features; he focuses on scalability, performance, and real user impact, with measurable results like a 60% dashboard load reduction, roughly 40% engagement lift, and products serving 300,000+ active users.",
+    category: "hr",
+    priority: 11,
+  },
+  {
+    question: "Why is he looking for a new opportunity?",
+    answer:
+      "He is looking to take on broader ownership and solve more complex, high-impact problems. After building and scaling key features end-to-end, he wants to contribute at a level where he can drive larger technical decisions and continue growing as a backend-focused engineer.",
+    category: "hr",
+    priority: 12,
   },
 ];
 
@@ -132,4 +147,4 @@ async function main(): Promise<void> {
   console.log(`[seed] done. wrote ${written} suggested questions.`);
 }
 
-await main();
+main().catch((err) => { console.error(err); process.exit(1); });

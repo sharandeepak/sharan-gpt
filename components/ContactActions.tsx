@@ -100,6 +100,46 @@ function CopyRow({
   );
 }
 
+function isUrl(value: string | null | undefined): value is string {
+  return Boolean(value?.startsWith("http://") || value?.startsWith("https://"));
+}
+
+function SocialAction({
+  href,
+  label,
+  icon,
+}: {
+  href: string | null;
+  label: string;
+  icon: React.ReactNode;
+}) {
+  if (!href) return null;
+
+  if (!isUrl(href)) {
+    return (
+      <Button variant="outline" size="md" disabled title={`${label} link not configured`}>
+        {icon}
+        <span>{label}</span>
+      </Button>
+    );
+  }
+
+  return (
+    <Button asChild variant="outline" size="md">
+      <a
+        href={href}
+        target="_blank"
+        rel="noreferrer noopener"
+        aria-label={`${label} profile`}
+      >
+        {icon}
+        <span>{label}</span>
+        <ExternalLink size={12} strokeWidth={1.6} className="text-fg-subtle" />
+      </a>
+    </Button>
+  );
+}
+
 export function ContactActions({
   email,
   phone,
@@ -114,9 +154,7 @@ export function ContactActions({
   );
   const emailTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleEmailClick = async (
-    e: React.MouseEvent<HTMLButtonElement>
-  ) => {
+  const handleEmailClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
       await navigator.clipboard.writeText(email);
@@ -148,8 +186,15 @@ export function ContactActions({
           </a>
         </Button>
 
+        <Button asChild variant="secondary" size="md">
+          <a href={resumeHref} target="_blank" rel="noreferrer noopener">
+            <ExternalLink size={14} strokeWidth={1.6} />
+            <span>View resume</span>
+          </a>
+        </Button>
+
         <Button
-          variant="secondary"
+          variant="outline"
           size="md"
           onClick={handleEmailClick}
           aria-label="Copy email and open mail client"
@@ -189,50 +234,23 @@ export function ContactActions({
           </div>
         </details>
 
-        {linkedin ? (
-          <Button asChild variant="outline" size="md">
-            <a
-              href={linkedin}
-              target="_blank"
-              rel="noreferrer noopener"
-              aria-label="LinkedIn profile"
-            >
-              <Linkedin size={14} strokeWidth={1.6} />
-              <span>LinkedIn</span>
-              <ExternalLink size={12} strokeWidth={1.6} className="text-fg-subtle" />
-            </a>
-          </Button>
-        ) : null}
+        <SocialAction
+          href={linkedin}
+          label="LinkedIn"
+          icon={<Linkedin size={14} strokeWidth={1.6} />}
+        />
 
-        {github ? (
-          <Button asChild variant="outline" size="md">
-            <a
-              href={github}
-              target="_blank"
-              rel="noreferrer noopener"
-              aria-label="GitHub profile"
-            >
-              <Github size={14} strokeWidth={1.6} />
-              <span>GitHub</span>
-              <ExternalLink size={12} strokeWidth={1.6} className="text-fg-subtle" />
-            </a>
-          </Button>
-        ) : null}
+        <SocialAction
+          href={github}
+          label="GitHub"
+          icon={<Github size={14} strokeWidth={1.6} />}
+        />
 
-        {leetcode ? (
-          <Button asChild variant="outline" size="md">
-            <a
-              href={leetcode}
-              target="_blank"
-              rel="noreferrer noopener"
-              aria-label="Leetcode profile"
-            >
-              <Code2 size={14} strokeWidth={1.6} />
-              <span>Leetcode</span>
-              <ExternalLink size={12} strokeWidth={1.6} className="text-fg-subtle" />
-            </a>
-          </Button>
-        ) : null}
+        <SocialAction
+          href={leetcode}
+          label="Leetcode"
+          icon={<Code2 size={14} strokeWidth={1.6} />}
+        />
       </div>
     </div>
   );

@@ -58,7 +58,7 @@ export function PromptInput({
       <form
         onSubmit={handleSubmit}
         className={cn(
-          "group relative flex w-full items-end gap-2 rounded-lg border border-border bg-panel px-3 py-2 transition-colors duration-[120ms] ease-[var(--ease-out-quart)] focus-within:border-border-strong",
+          "group relative flex w-full min-w-0 items-end gap-2 rounded-lg border border-border bg-panel px-3 py-2 transition-colors duration-[120ms] ease-[var(--ease-out-quart)] focus-within:border-border-strong",
           className
         )}
         {...props}
@@ -132,13 +132,13 @@ export const PromptInputTextarea = React.forwardRef<
         {
           // modern browsers honor field-sizing; JS keeps fallback in sync
           fieldSizing: "content",
-          minHeight: 44,
+          minHeight: 42,
           maxHeight: 160,
           ...style,
         } as React.CSSProperties & { fieldSizing: "content" }
       }
       className={cn(
-        "block w-full flex-1 resize-none bg-transparent px-1 py-1.5 text-[14.5px] leading-relaxed text-fg placeholder:text-fg-subtle focus:outline-none",
+        "block min-w-0 w-full flex-1 resize-none bg-transparent px-1 py-1 text-[13px] leading-[1.45] text-fg placeholder:text-[clamp(12px,1em,13px)] placeholder:leading-[1.4] placeholder:text-fg-subtle focus:outline-none sm:text-[14px]",
         "scrollbar-clean",
         className
       )}

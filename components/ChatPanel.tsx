@@ -11,10 +11,8 @@ import {
   SuggestedQuestions,
   type SuggestedItem,
 } from "@/components/SuggestedQuestions";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/Toast";
 import { cn } from "@/lib/utils";
-import { RefreshCw } from "lucide-react";
 
 export interface ChatPanelProps {
   sessionId: string;
@@ -42,6 +40,13 @@ interface CuratedTurn {
   question: string;
 }
 
+interface PromptMorph {
+  text: string;
+  from: DOMRect;
+  to: DOMRect;
+  active: boolean;
+}
+
 function uid(prefix: string): string {
   return `${prefix}_${Date.now().toString(36)}_${Math.random()
     .toString(36)
@@ -62,6 +67,47 @@ function readAssistantText(message: { content?: string; parts?: Array<{ type: st
   return "";
 }
 
+function useTypewriterPhrases(
+  phrases: string[],
+  paused: boolean
+): { displayedText: string; fullText: string } {
+  const [phraseIndex, setPhraseIndex] = React.useState(0);
+  const [charIndex, setCharIndex] = React.useState(0);
+  const [isDeleting, setIsDeleting] = React.useState(false);
+
+  React.useEffect(() => {
+    if (paused || phrases.length === 0) return;
+
+    const current = phrases[phraseIndex] ?? "";
+    const reachedEnd = !isDeleting && charIndex === current.length;
+    const reachedStart = isDeleting && charIndex === 0;
+
+    const timeout = window.setTimeout(
+      () => {
+        if (reachedEnd) {
+          setIsDeleting(true);
+          return;
+        }
+        if (reachedStart) {
+          setIsDeleting(false);
+          setPhraseIndex((prev) => (prev + 1) % phrases.length);
+          return;
+        }
+        setCharIndex((prev) => prev + (isDeleting ? -1 : 1));
+      },
+      reachedEnd ? 1500 : isDeleting ? 26 : 42
+    );
+
+    return () => window.clearTimeout(timeout);
+  }, [charIndex, isDeleting, paused, phraseIndex, phrases]);
+
+  const fullText = phrases[phraseIndex] ?? "";
+  return {
+    displayedText: fullText.slice(0, charIndex),
+    fullText,
+  };
+}
+
 export function ChatPanel({ sessionId, theme, inputRef }: ChatPanelProps) {
   const toast = useToast();
   const [suggestions, setSuggestions] = React.useState<SuggestedItem[]>([]);
@@ -69,12 +115,20 @@ export function ChatPanel({ sessionId, theme, inputRef }: ChatPanelProps) {
   const [composerValue, setComposerValue] = React.useState("");
   const [errorBanner, setErrorBanner] = React.useState<string | null>(null);
   const [curatedStreaming, setCuratedStreaming] = React.useState(false);
+  const [composerPrimed, setComposerPrimed] = React.useState(false);
+  const [suggestionsVisible, setSuggestionsVisible] = React.useState(true);
+  const [promptMorph, setPromptMorph] = React.useState<PromptMorph | null>(
+    null
+  );
   const [, setLiveAnnouncement] = React.useState("");
 
   // Curated turns kept locally — they don't go through the chat API.
   const [curatedMessages, setCuratedMessages] = React.useState<DisplayedMessage[]>([]);
   const curatedIntervalRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
   const lastSourceRef = React.useRef<"free_text" | "suggested_question" | null>(null);
+  const promptCardRef = React.useRef<HTMLButtonElement | null>(null);
+  const composerRef = React.useRef<HTMLDivElement | null>(null);
+  const promptTimersRef = React.useRef<ReturnType<typeof setTimeout>[]>([]);
 
   const pagePath =
     typeof window !== "undefined" ? window.location.pathname : "/";
@@ -136,6 +190,7 @@ export function ChatPanel({ sessionId, theme, inputRef }: ChatPanelProps) {
   React.useEffect(() => {
     return () => {
       if (curatedIntervalRef.current) clearInterval(curatedIntervalRef.current);
+      promptTimersRef.current.forEach(clearTimeout);
     };
   }, []);
 
@@ -190,6 +245,7 @@ export function ChatPanel({ sessionId, theme, inputRef }: ChatPanelProps) {
     (text: string) => {
       if (!text || isBusy) return;
       lastSourceRef.current = "free_text";
+      setSuggestionsVisible(true);
       setComposerValue("");
       setErrorBanner(null);
       append(
@@ -268,6 +324,7 @@ export function ChatPanel({ sessionId, theme, inputRef }: ChatPanelProps) {
   const handleSuggestionSelect = React.useCallback(
     async (item: SuggestedItem) => {
       if (isBusy) return;
+      setSuggestionsVisible(true);
       const turn: CuratedTurn = {
         userId: uid("u"),
         assistantId: uid("a"),
@@ -343,23 +400,90 @@ export function ChatPanel({ sessionId, theme, inputRef }: ChatPanelProps) {
     [animateCuratedAnswer, handleFreeFormSubmit, isBusy, toast, trackQuestion]
   );
 
-  const refreshSuggestions = React.useCallback(async () => {
-    setSuggestionsLoading(true);
-    try {
-      const res = await fetch("/api/suggested-questions", { method: "GET" });
-      const data = (await res.json()) as { items?: SuggestedItem[] };
-      if (Array.isArray(data.items) && data.items.length > 0) {
-        setSuggestions(data.items);
-      }
-    } catch {
-      // ignore
-    } finally {
-      setSuggestionsLoading(false);
-    }
+  const visibleSuggestions = suggestions.slice(0, 6);
+  const shouldShowSuggestions =
+    visibleSuggestions.length > 0 &&
+    (allMessages.length === 0 || suggestionsVisible);
+  const { displayedText: typewriterPrompt, fullText: fullPrompt } =
+    useTypewriterPhrases(
+    [
+      "What did Sharan build that scaled to 300,000+ users?",
+      "Where has Sharan shown backend judgment under pressure?",
+      "How does Sharan use AI workflows in real product work?",
+    ],
+    allMessages.length > 0 || suggestionsLoading
+    );
+
+  const queuePromptTimer = React.useCallback((callback: () => void, ms: number) => {
+    const timer = setTimeout(() => {
+      promptTimersRef.current = promptTimersRef.current.filter((t) => t !== timer);
+      callback();
+    }, ms);
+    promptTimersRef.current.push(timer);
   }, []);
 
-  const visibleSuggestions = suggestions.slice(0, 6);
-  const heroSuggestions = suggestions.slice(0, 4);
+  const primeComposerWithPrompt = React.useCallback(() => {
+    const promptText =
+      fullPrompt.trim() ||
+      "What did Sharan build that scaled to 300,000+ users?";
+    const source = promptCardRef.current;
+    const composerForm = composerRef.current?.querySelector("form");
+    const target =
+      composerForm instanceof HTMLElement ? composerForm : composerRef.current;
+
+    promptTimersRef.current.forEach(clearTimeout);
+    promptTimersRef.current = [];
+
+    const reducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    inputRef?.current?.focus();
+
+    if (!source || !target || reducedMotion) {
+      setComposerValue(promptText);
+      setComposerPrimed(true);
+      queuePromptTimer(() => setComposerPrimed(false), 1200);
+      return;
+    }
+
+    setComposerValue("");
+    setComposerPrimed(false);
+    setPromptMorph({
+      text: promptText,
+      from: source.getBoundingClientRect(),
+      to: target.getBoundingClientRect(),
+      active: false,
+    });
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setPromptMorph((current) =>
+          current ? { ...current, active: true } : current
+        );
+      });
+    });
+
+    queuePromptTimer(() => {
+      inputRef?.current?.focus();
+      setComposerPrimed(true);
+    }, 260);
+
+    queuePromptTimer(() => {
+      let cursor = 0;
+      const tick = () => {
+        cursor = Math.min(cursor + 4, promptText.length);
+        setComposerValue(promptText.slice(0, cursor));
+        if (cursor < promptText.length) {
+          queuePromptTimer(tick, 16);
+        }
+      };
+      tick();
+    }, 410);
+
+    queuePromptTimer(() => setPromptMorph(null), 780);
+    queuePromptTimer(() => setComposerPrimed(false), 1600);
+  }, [fullPrompt, inputRef, queuePromptTimer]);
 
   // Map AI SDK v4 status to PromptInput status.
   const promptStatus: "ready" | "streaming" | "submitted" | "error" =
@@ -381,27 +505,39 @@ export function ChatPanel({ sessionId, theme, inputRef }: ChatPanelProps) {
     : "";
 
   const emptyState = (
-    <div className="flex w-full max-w-[44ch] flex-col items-start gap-4 text-left">
-      <div className="flex flex-col gap-1.5">
+    <div className="flex w-full max-w-[42rem] flex-col items-start justify-center gap-4 text-left">
+      <div className="flex flex-col gap-2">
         <h2
-          className="text-[19px] font-semibold leading-[1.2] text-fg"
+          className="text-[19px] font-semibold leading-[1.2] text-fg sm:text-[22px]"
           style={{ letterSpacing: "-0.01em" }}
         >
           Ask about Sharan
         </h2>
-        <p className="text-[14px] leading-[1.5] text-fg-muted">
-          Recruiters usually want to know about scaling, impact, AI tooling,
-          and mobile work.
-        </p>
       </div>
-      <SuggestedQuestions
-        items={heroSuggestions}
-        onSelect={handleSuggestionSelect}
-        loading={suggestionsLoading}
-        disabled={isBusy}
-        variant="grid"
-        className="w-full"
-      />
+      <button
+        ref={promptCardRef}
+        type="button"
+        onClick={primeComposerWithPrompt}
+        className={cn(
+          "group relative w-full max-w-[38rem] overflow-hidden rounded-2xl border border-border bg-panel-soft/60 px-4 py-4 text-left transition-[transform,opacity,border-color,background-color,box-shadow] duration-300 ease-[var(--ease-out-quart)] sm:px-5 sm:py-5",
+          "hover:-translate-y-0.5 hover:border-border-strong hover:bg-panel-soft/80",
+          "focus-visible:border-accent focus-visible:outline-none focus-visible:shadow-[0_0_0_1px_var(--color-accent),0_0_0_6px_color-mix(in_oklch,var(--color-accent)_14%,transparent)]",
+          promptMorph && "scale-[0.985] opacity-35"
+        )}
+      >
+        <div className="mb-3 flex items-center gap-2 text-[11px] font-mono uppercase tracking-[0.08em] text-fg-subtle">
+          <span className="inline-flex h-2 w-2 rounded-full bg-accent" />
+          recruiter prompt
+        </div>
+        <div className="min-h-[4.5rem] text-[18px] font-medium leading-[1.45] text-fg sm:min-h-[5rem] sm:text-[22px]">
+          {typewriterPrompt}
+          <span className="caret-pulse" aria-hidden="true" />
+        </div>
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 translate-x-[-115%] bg-[linear-gradient(110deg,transparent,rgba(255,255,255,0.16),transparent)] transition-transform duration-700 ease-[var(--ease-out-quart)] group-hover:translate-x-[115%]"
+        />
+      </button>
     </div>
   );
 
@@ -416,32 +552,38 @@ export function ChatPanel({ sessionId, theme, inputRef }: ChatPanelProps) {
         {lastAssistantPreview}
       </div>
 
-      <ChatMessageList messages={allMessages} emptyState={emptyState} />
+      <ChatMessageList
+        messages={allMessages}
+        emptyState={emptyState}
+        onUserScrollDirectionChange={(direction) => {
+          if (allMessages.length === 0) return;
+          setSuggestionsVisible(direction === "down");
+        }}
+      />
 
       <div className="flex flex-col gap-2">
-        {visibleSuggestions.length > 0 ? (
-          <div className="flex items-center gap-2">
-            <SuggestedQuestions
-              items={visibleSuggestions}
-              onSelect={handleSuggestionSelect}
-              loading={suggestionsLoading}
-              disabled={isBusy}
-              variant="row"
-              className="flex-1"
-            />
-            <Button
-              variant="ghost"
-              size="sm"
-              aria-label="Refresh suggestions"
-              onClick={refreshSuggestions}
-              disabled={suggestionsLoading || isBusy}
-              className="h-7 px-2 text-fg-subtle"
-            >
-              <RefreshCw size={14} strokeWidth={1.6} />
-              <span className="text-[12px]">Refresh</span>
-            </Button>
+        <div
+          className={cn(
+            "grid transition-[grid-template-rows,opacity,transform] duration-300 ease-[var(--ease-out-quart)]",
+            shouldShowSuggestions
+              ? "grid-rows-[1fr] opacity-100 translate-y-0"
+              : "pointer-events-none grid-rows-[0fr] opacity-0 translate-y-1"
+          )}
+          aria-hidden={!shouldShowSuggestions}
+        >
+          <div className="min-h-0 overflow-hidden">
+            {visibleSuggestions.length > 0 ? (
+              <SuggestedQuestions
+                items={visibleSuggestions}
+                onSelect={handleSuggestionSelect}
+                loading={suggestionsLoading}
+                disabled={isBusy}
+                variant="row"
+                className="w-full pb-1"
+              />
+            ) : null}
           </div>
-        ) : null}
+        </div>
 
         {errorBanner ? (
           <div className="px-1 text-[13px] text-danger" role="alert">
@@ -456,8 +598,53 @@ export function ChatPanel({ sessionId, theme, inputRef }: ChatPanelProps) {
           status={promptStatus}
           disabled={isBusy}
           inputRef={inputRef}
+          containerRef={composerRef}
+          isPrimed={composerPrimed}
         />
       </div>
+
+      {promptMorph ? (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none fixed z-50 overflow-hidden rounded-2xl border border-border bg-panel-soft/95 shadow-[0_18px_60px_rgba(0,0,0,0.24)] backdrop-blur-[3px] transition-[left,top,width,height,opacity,border-radius,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+          style={{
+            left: promptMorph.active ? promptMorph.to.left : promptMorph.from.left,
+            top: promptMorph.active ? promptMorph.to.top : promptMorph.from.top,
+            width: promptMorph.active ? promptMorph.to.width : promptMorph.from.width,
+            height: promptMorph.active ? promptMorph.to.height : promptMorph.from.height,
+            borderRadius: promptMorph.active ? 12 : 16,
+            opacity: promptMorph.active ? 0.12 : 0.98,
+            transform: promptMorph.active ? "scale(0.98)" : "scale(1)",
+          }}
+        >
+          <div
+            className={cn(
+              "absolute inset-0 bg-[linear-gradient(110deg,transparent,rgba(255,255,255,0.18),transparent)] transition-transform duration-700 ease-[var(--ease-out-quart)]",
+              promptMorph.active ? "translate-x-[115%]" : "translate-x-[-115%]"
+            )}
+          />
+          <div className="relative flex h-full flex-col justify-between px-4 py-4 sm:px-5 sm:py-5">
+            <div
+              className={cn(
+                "flex items-center gap-2 text-[11px] font-mono uppercase tracking-[0.08em] text-fg-subtle transition-opacity duration-300",
+                promptMorph.active && "opacity-0"
+              )}
+            >
+              <span className="inline-flex h-2 w-2 rounded-full bg-accent" />
+              recruiter prompt
+            </div>
+            <div
+              className={cn(
+                "truncate text-[18px] font-medium leading-[1.4] text-fg transition-[font-size,opacity,transform] duration-500 ease-[var(--ease-out-quart)]",
+                promptMorph.active &&
+                  "translate-y-[-2px] text-[13px] opacity-80"
+              )}
+            >
+              {promptMorph.text}
+            </div>
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }

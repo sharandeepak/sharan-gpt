@@ -20,7 +20,7 @@ export interface ButtonProps
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: "bg-accent text-accent-fg hover:opacity-90",
+  primary: "bg-accent !text-accent-fg hover:opacity-90",
   secondary:
     "bg-panel-soft text-fg border border-border hover:border-border-strong",
   outline:

@@ -12,7 +12,7 @@ import {
   type ThemeId,
 } from "@/lib/themes";
 import { getOrCreateSessionId } from "@/lib/session-client";
-import { isUrl, type Profile } from "@/types/profile";
+import { type Profile } from "@/types/profile";
 import { cn } from "@/lib/utils";
 
 export interface ResumeWebsiteLayoutProps {
@@ -104,18 +104,13 @@ export function ResumeWebsiteLayout({ profile }: ResumeWebsiteLayoutProps) {
   }, []);
 
   const candidate = profile.candidate;
-  const resumePanelProfile = {
-    name: candidate.name,
-    displayRole: deriveDisplayRole(profile),
-    location: candidate.location,
-    tagline: candidate.headline,
-    contact: {
-      email: candidate.email,
-      phone: candidate.phone,
-      linkedin: isUrl(candidate.links.linkedin) ? candidate.links.linkedin : null,
-      github: isUrl(candidate.links.github) ? candidate.links.github : null,
-      leetcode: isUrl(candidate.links.leetcode) ? candidate.links.leetcode : null,
-    },
+  const displayRole = deriveDisplayRole(profile);
+  const contact = {
+    email: candidate.email,
+    phone: candidate.phone,
+    linkedin: candidate.links.linkedin,
+    github: candidate.links.github,
+    leetcode: candidate.links.leetcode,
   };
 
   return (
@@ -129,10 +124,10 @@ export function ResumeWebsiteLayout({ profile }: ResumeWebsiteLayoutProps) {
           {candidate.name}
         </div>
         <div className="flex items-center gap-3">
-          <span className="hidden font-mono text-[11px] text-fg-subtle sm:inline">
-            <kbd className="rounded-sm border border-border bg-panel-soft px-1 py-[1px] text-[10px] text-fg-muted">
+          <span className="hidden items-center gap-1 font-mono text-[13px] text-fg-subtle sm:inline-flex">
+            <kbd className="rounded-md border border-border bg-panel-soft px-1.5 py-0.5 text-[11px] leading-none text-fg-muted">
               {modKey}K
-            </kbd>{" "}
+            </kbd>
             ask
           </span>
           <ThemeSwitcher current={theme} onChange={setTheme} />
@@ -143,10 +138,10 @@ export function ResumeWebsiteLayout({ profile }: ResumeWebsiteLayoutProps) {
         <ResizableSplitPane
           left={
             <ResumePanel
-              profile={resumePanelProfile}
-              resumeSrc={RESUME_HREF}
-              resumeDownloadHref={RESUME_HREF}
-              resumeFilename={RESUME_FILENAME}
+              profile={profile}
+              displayRole={displayRole}
+              contact={contact}
+              resumeHref={RESUME_HREF}
             />
           }
           right={

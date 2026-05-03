@@ -17,6 +17,7 @@ export interface ProfileCandidate {
   links: ProfileLinks;
   headline: string;
   summary: string;
+  personalInterests?: string[];
 }
 
 export interface ProfileExperience {
@@ -69,6 +70,40 @@ export interface ProfileHonor {
   reason?: string;
 }
 
+export interface ProfileInterviewKnowledge {
+  currentStatus: string;
+  targetRoles: string[];
+  careerMotivation: string;
+  whySoftware: string;
+  strengths: Array<{ name: string; evidence: string }>;
+  bestProject: {
+    name: string;
+    period: string;
+    role: string;
+    techStack: string[];
+    problem: string;
+    challenge: string;
+    impact: string;
+  };
+  difficultChallenge: string;
+  teamwork: string;
+  leadership: string;
+  recentLearning: string[];
+  workStyle: string;
+  availability: {
+    expectedSalary: string;
+    currentSalary: string;
+    noticePeriod: string;
+    earliestJoiningDate: string;
+    preferredLocations: string[];
+    relocation: string;
+  };
+  careerGoals: string;
+  commonAnswers: Record<string, string>;
+  tonePreference: string;
+  hardBoundaries: string[];
+}
+
 export interface Profile {
   candidate: ProfileCandidate;
   experience: ProfileExperience[];
@@ -77,6 +112,7 @@ export interface Profile {
   projects: ProfileProject[];
   certifications: ProfileCertification[];
   honorsAndAwards: ProfileHonor[];
+  interviewKnowledge?: ProfileInterviewKnowledge;
 }
 
 /** Treat `s` as a real http(s) URL or return null. Used because the JSON

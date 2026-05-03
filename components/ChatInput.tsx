@@ -16,6 +16,8 @@ export interface ChatInputProps {
   disabled?: boolean;
   placeholder?: string;
   inputRef?: React.RefObject<HTMLTextAreaElement | null>;
+  containerRef?: React.RefObject<HTMLDivElement | null>;
+  isPrimed?: boolean;
 }
 
 const DEFAULT_PLACEHOLDER =
@@ -49,6 +51,8 @@ export function ChatInput({
   disabled,
   placeholder,
   inputRef,
+  containerRef,
+  isPrimed = false,
 }: ChatInputProps) {
   const modKey = useModKeyLabel();
 
@@ -59,7 +63,14 @@ export function ChatInput({
   };
 
   return (
-    <div className="flex flex-col gap-1.5">
+    <div
+      ref={containerRef}
+      className={cn(
+        "flex flex-col gap-1.5 rounded-xl transition-[box-shadow,transform] duration-500 ease-[var(--ease-out-quart)]",
+        isPrimed &&
+          "translate-y-[-1px] shadow-[0_0_0_1px_var(--color-accent),0_0_0_6px_color-mix(in_oklch,var(--color-accent)_16%,transparent)]"
+      )}
+    >
       <PromptInput onSubmit={handleSubmit}>
         <PromptInputTextarea
           ref={inputRef as React.Ref<HTMLTextAreaElement>}
@@ -74,11 +85,11 @@ export function ChatInput({
 
       <div
         className={cn(
-          "flex items-center gap-3 px-1 font-mono text-[11px] text-fg-subtle"
+          "flex flex-wrap items-center gap-x-3 gap-y-1 px-1 font-mono text-[12px] text-fg-subtle"
         )}
       >
         <span className="inline-flex items-center gap-1">
-          <kbd className="rounded-sm border border-border bg-panel-soft px-1 py-[1px] text-[10px] text-fg-muted">
+          <kbd className="rounded-md border border-border bg-panel-soft px-1.5 py-0.5 text-[11px] leading-none text-fg-muted">
             {modKey}K
           </kbd>
           <span>focus</span>
@@ -87,7 +98,7 @@ export function ChatInput({
           ·
         </span>
         <span className="inline-flex items-center gap-1">
-          <kbd className="rounded-sm border border-border bg-panel-soft px-1 py-[1px] text-[10px] text-fg-muted">
+          <kbd className="rounded-md border border-border bg-panel-soft px-1.5 py-0.5 text-[11px] leading-none text-fg-muted">
             {modKey}D
           </kbd>
           <span>download resume</span>

@@ -23,12 +23,56 @@ export interface ChatMessageListProps {
   messages: DisplayedMessage[];
   /** Render slot above the messages, e.g. an empty state. */
   emptyState: React.ReactNode;
+  onUserScrollDirectionChange?: (direction: "up" | "down") => void;
 }
 
-export function ChatMessageList({ messages, emptyState }: ChatMessageListProps) {
+export function ChatMessageList({
+  messages,
+  emptyState,
+  onUserScrollDirectionChange,
+}: ChatMessageListProps) {
+  const bottomRef = React.useRef<HTMLDivElement | null>(null);
+  const lastScrollTopRef = React.useRef(0);
+  const ignoreScrollUntilRef = React.useRef(0);
+  const lastMessage = messages[messages.length - 1];
+  const scrollSignal = lastMessage
+    ? `${messages.length}:${lastMessage.id}:${lastMessage.text.length}:${lastMessage.isStreaming ? "streaming" : "done"}`
+    : "empty";
+
+  const scrollToBottom = React.useCallback((behavior: ScrollBehavior) => {
+    ignoreScrollUntilRef.current = Date.now() + 350;
+    bottomRef.current?.scrollIntoView({ block: "end", behavior });
+  }, []);
+
+  React.useEffect(() => {
+    if (messages.length === 0) return;
+    scrollToBottom("smooth");
+  }, [messages.length, scrollToBottom]);
+
+  React.useEffect(() => {
+    if (!lastMessage?.isStreaming) return;
+    scrollToBottom("auto");
+  }, [lastMessage?.isStreaming, scrollSignal, scrollToBottom]);
+
+  const handleScroll = React.useCallback(
+    (event: React.UIEvent<HTMLDivElement>) => {
+      const current = event.currentTarget.scrollTop;
+      const previous = lastScrollTopRef.current;
+      lastScrollTopRef.current = current;
+
+      if (!onUserScrollDirectionChange) return;
+      if (Date.now() < ignoreScrollUntilRef.current) return;
+
+      const delta = current - previous;
+      if (Math.abs(delta) < 10) return;
+      onUserScrollDirectionChange(delta > 0 ? "down" : "up");
+    },
+    [onUserScrollDirectionChange]
+  );
+
   return (
     <Conversation className="min-h-0 flex-1">
-      <ConversationContent>
+      <ConversationContent onScroll={handleScroll}>
         {messages.length === 0 ? (
           <div className="flex h-full w-full items-center justify-center">
             {emptyState}
@@ -59,6 +103,7 @@ export function ChatMessageList({ messages, emptyState }: ChatMessageListProps) 
             );
           })
         )}
+        <div ref={bottomRef} aria-hidden="true" className="h-px shrink-0" />
       </ConversationContent>
       <ConversationScrollButton />
     </Conversation>

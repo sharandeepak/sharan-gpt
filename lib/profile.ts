@@ -9,21 +9,22 @@ export interface ProfileChunk {
     | "contact"
     | "awards"
     | "ai-workflows"
-    | "mobile";
+    | "mobile"
+    | "hr";
   title: string;
   body: string;
   keywords: string[];
 }
 
 export const PROFILE_SUMMARY: string =
-  "Sharan Deepak R B is a backend-focused software engineer based in Chennai, working as a Software Developer at SurveySparrow with 3 years of experience. He is positioned as a Senior Product Developer / Backend-focused Full Stack Developer with strengths in backend architecture, API design, database modeling, performance optimization, and mentoring small teams. Key impact: 300,000+ active users across 250+ paying customers, shipped the One-on-Ones module 0 to 1, cut dashboard load by 60% with Elasticsearch, lifted portal engagement by roughly 40% via Slack-driven workflows, and raised backend AI agent readiness from 0% to 85%. Contact via sharandeepak32@gmail.com.";
+  "Sharan Deepak R B is a backend-focused software engineer based in Chennai, currently working as a Software Developer at SurveySparrow with 3 years of experience. He builds and scales 0 to 1 product features for 300,000+ active users, with strengths in backend architecture, API design, database modeling, performance optimization, end-to-end ownership, and mentoring small teams. Key impact: 300,000+ active users across 250+ paying customers, shipped the One-on-Ones module 0 to 1, cut dashboard load by 60% with Elasticsearch, lifted portal engagement by roughly 40% via Slack-driven workflows, and raised backend AI agent readiness from 0% to 85%. For HR-style answers, use a concise, recruiter-friendly, confident tone based only on verified profile data. Contact via sharandeepak32@gmail.com.";
 
 export const PROFILE_CHUNKS: ProfileChunk[] = [
   {
     id: "exp-surveysparrow",
     category: "experience",
     title: "SurveySparrow, Software Developer (2023 to Present)",
-    body: "At SurveySparrow in Chennai, Sharan leads backend for employee engagement products serving 300,000+ active users across 250+ paying customers, with enterprise deployments reaching 50,000 employees. He built and launched the One-on-Ones module 0 to 1, owning architecture, API design, schema, services, and rollout. He also developed the Reward Marketplace covering redemption workflows, voucher lifecycle management, and third-party vendor integrations.",
+    body: "At SurveySparrow in Chennai, Sharan works as a Software Developer and leads backend for employee engagement products serving 300,000+ active users across 250+ paying customers, with enterprise deployments reaching 50,000 employees. He built and launched the One-on-Ones module from 0 to 1, owning architecture, API design, schema, services, and rollout. He also developed the Reward Marketplace covering redemption workflows, voucher lifecycle management, and third-party vendor integrations.",
     keywords: [
       "surveysparrow",
       "backend",
@@ -62,12 +63,18 @@ export const PROFILE_CHUNKS: ProfileChunk[] = [
   {
     id: "exp-growfin-zoho",
     category: "experience",
-    title: "Earlier roles: Growfin and Zoho",
-    body: "At Growfin in Chennai (Jan 2023 to June 2023), Sharan worked as a Backend Development Intern, building an internal SDK for CRM service communication and shipping cron-based automation, queue-driven processing, and cache-backed services. Earlier in May to June 2022 he was a Summer Intern at Zoho Corporation in Chennai.",
+    title: "Internships: Growfin and Zoho",
+    body: "Sharan did internships at Growfin and Zoho Corporation in Chennai. At Growfin (Jan 2023 to June 2023), he worked as a Backend Development Intern, building an internal SDK for CRM service communication and shipping cron-based automation, queue-driven processing, and cache-backed services. Earlier, from May 2022 to June 2022, he was a Summer Intern at Zoho Corporation.",
     keywords: [
       "growfin",
       "zoho",
       "intern",
+      "interns",
+      "internship",
+      "internships",
+      "where internship",
+      "summer intern",
+      "backend development intern",
       "sdk",
       "crm",
       "cron",
@@ -81,8 +88,16 @@ export const PROFILE_CHUNKS: ProfileChunk[] = [
     id: "skills-core",
     category: "skills",
     title: "Core technical skills",
-    body: "Languages and platforms: TypeScript, C++, Java, JavaScript, Dart, SQL. Frameworks and APIs: Spring Boot, REST API. Datastores: PostgreSQL, Redis, ElasticSearch. Infrastructure: Docker, Git. Foundations: DBMS, OOPS, Data Structures. Web basics: HTML, CSS.",
+    body: "Programming languages Sharan knows: TypeScript, C++, Java, Dart, and JavaScript. He also works with SQL. Frameworks and APIs: Spring Boot, REST API, API Design, Backend Architecture, and Database Modeling. Datastores and search: PostgreSQL, Redis, Elasticsearch, SQL, and OpenSearch. Frontend and mobile: HTML, CSS, and Flutter. Infrastructure: Docker and Git. Foundations: DBMS, OOPS, and Data Structures. AI engineering: LLM-friendly repository setup, AI agent readiness, sub-agent workflows, and rules/hooks for AI-assisted development.",
     keywords: [
+      "language",
+      "languages",
+      "programming",
+      "programming language",
+      "programming languages",
+      "knows",
+      "learned",
+      "skills",
       "typescript",
       "java",
       "c++",
@@ -104,7 +119,7 @@ export const PROFILE_CHUNKS: ProfileChunk[] = [
     id: "projects-goal-assist",
     category: "projects",
     title: "Goal Assist (2025)",
-    body: "Goal Assist (Aug 2025 to Oct 2025) is an AI-powered productivity platform. It includes a manager dashboard surfacing priorities, task progress, and execution signals, plus an MCP-powered workflow that captures developer activity and turns it into structured updates.",
+    body: "Goal Assist (Aug 2025 to Oct 2025) is an AI-powered productivity platform that helps developers communicate progress clearly while giving managers a structured view to review, prioritize, and track work. It includes a manager dashboard centralizing priorities, task progress, and execution signals, plus an MCP-powered workflow that captures developer activity and converts it into structured updates. It reduced manual task filling and repetitive standup reporting.",
     keywords: [
       "goal assist",
       "ai",
@@ -114,6 +129,7 @@ export const PROFILE_CHUNKS: ProfileChunk[] = [
       "dashboard",
       "priorities",
       "developer activity",
+      "standup",
       "2025",
     ],
   },
@@ -153,8 +169,8 @@ export const PROFILE_CHUNKS: ProfileChunk[] = [
   {
     id: "contact",
     category: "contact",
-    title: "Contact",
-    body: "Email: sharandeepak32@gmail.com. Phone: +91 9940579219. Location: Chennai, India. The page also exposes Email me and Contact me buttons for direct outreach.",
+    title: "Contact and availability",
+    body: "Email: sharandeepak32@gmail.com. Phone: +91 9940579219. Location: Chennai, India. Preferred locations are Chennai, Bangalore, and Hyderabad. Notice period is 15 to 30 days and negotiable. Earliest joining date is ASAP. Salary details should be discussed directly with Sharan. He is open to relocating based on the opportunity. The page also exposes Email me and Contact me buttons for direct outreach.",
     keywords: [
       "contact",
       "email",
@@ -163,6 +179,13 @@ export const PROFILE_CHUNKS: ProfileChunk[] = [
       "india",
       "reach",
       "hire",
+      "notice",
+      "availability",
+      "salary",
+      "relocate",
+      "relocation",
+      "bangalore",
+      "hyderabad",
       "sharandeepak32",
     ],
   },
@@ -207,7 +230,7 @@ export const PROFILE_CHUNKS: ProfileChunk[] = [
     id: "mobile",
     category: "mobile",
     title: "Mobile work",
-    body: "On mobile, Sharan works with Flutter and Dart from his core skill set. At SurveySparrow he mentored a 3-person team that spans mobile and backend, coordinating delivery across both surfaces.",
+    body: "On mobile, Sharan works with Flutter and Dart. At SurveySparrow he mentored a 3-person team by guiding implementation, reviewing contributions, and driving delivery across mobile and backend initiatives.",
     keywords: [
       "mobile",
       "flutter",
@@ -218,6 +241,107 @@ export const PROFILE_CHUNKS: ProfileChunk[] = [
       "cross-platform",
     ],
   },
+  {
+    id: "hr-positioning",
+    category: "hr",
+    title: "HR positioning and target roles",
+    body: "Sharan is currently working as a Software Developer at SurveySparrow. Verified target-role information in the current profile data is not available beyond his backend-focused software engineering positioning.",
+    keywords: [
+      "current",
+      "status",
+      "role",
+      "roles",
+      "looking",
+      "opportunity",
+      "motivation",
+      "why change",
+      "why looking",
+      "software developer",
+      "backend developer",
+      "full stack",
+      "product engineer",
+    ],
+  },
+  {
+    id: "hr-why-software-strengths",
+    category: "hr",
+    title: "Why software and professional strengths",
+    body: "Sharan chose software development because he is passionate about building products that solve real-world problems, turning ideas into working software, and seeing the impact on users. His top strengths are backend architecture and scalability, end-to-end ownership, and performance optimization/problem-solving. A strong example is reducing dashboard load time by roughly 60% by replacing SQL-heavy workflows with optimized Elasticsearch queries.",
+    keywords: [
+      "why software",
+      "why field",
+      "strength",
+      "strengths",
+      "backend architecture",
+      "scalability",
+      "ownership",
+      "performance",
+      "problem solving",
+      "impact",
+      "hire",
+    ],
+  },
+  {
+    id: "hr-team-leadership-workstyle",
+    category: "hr",
+    title: "Teamwork, leadership, and work style",
+    body: "Sharan works as a collaborative and ownership-driven team member with clear communication and stakeholder alignment. On the One-on-Ones module, he worked with product managers on requirements, designers on workflows, frontend and mobile developers on integration, and teammates through mentoring and code reviews. His work style is to break work into clear tasks, prioritize by impact and deadlines, align early with stakeholders, keep progress visible, deliver a working version first, and communicate trade-offs proactively under pressure.",
+    keywords: [
+      "teamwork",
+      "team",
+      "collaboration",
+      "leadership",
+      "ownership",
+      "one-on-ones",
+      "mentor",
+      "code review",
+      "deadline",
+      "pressure",
+      "work style",
+      "communication",
+    ],
+  },
+  {
+    id: "hr-common-answers",
+    category: "hr",
+    title: "Common HR answers",
+    body: "For 'Why should we hire you?', answer: I bring strong backend expertise along with end-to-end ownership. I do not just build features; I focus on scalability, performance, and real user impact, which has helped me deliver measurable results like improving performance and engagement in production systems. For 'Why this role?', answer: This role aligns well with my strengths in backend engineering and building scalable systems. I am looking for an opportunity where I can work on meaningful problems and contribute at a larger scale. For motivation, answer that Sharan is motivated by solving real-world problems, improving system performance, and seeing production impact.",
+    keywords: [
+      "why hire",
+      "hire you",
+      "why should we hire",
+      "why this role",
+      "salary expectations",
+      "motivation",
+      "motivates",
+      "different",
+      "differentiator",
+      "deadline",
+      "team",
+      "relocate",
+    ],
+  },
+  {
+    id: "hr-career-goals-learning-personal",
+    category: "hr",
+    title: "Career goals, learning, and personal interests",
+    body: "Verified profile data confirms Sharan has used MCP-powered workflows for AI-powered developer productivity and has experience with Flutter and Dart. Additional verified information about career goals, recent mobile learning, or personal interests is not available in the current profile data.",
+    keywords: [
+      "career goals",
+      "where do you see",
+      "2 years",
+      "3 years",
+      "learning",
+      "recently learned",
+      "mcp",
+      "music",
+      "piano",
+      "personal",
+      "hobby",
+      "hobbies",
+      "interests",
+    ],
+  },
 ];
 
 function tokenize(input: string): string[] {
@@ -226,6 +350,23 @@ function tokenize(input: string): string[] {
     .split(/\W+/)
     .map((t) => t.trim())
     .filter((t) => t.length > 1);
+}
+
+function tokenVariants(token: string): string[] {
+  const variants = new Set([token]);
+  if (token.endsWith("ships") && token.length > 5) {
+    variants.add(token.slice(0, -1));
+  }
+  if (token.endsWith("ies") && token.length > 4) {
+    variants.add(`${token.slice(0, -3)}y`);
+  }
+  if (token.endsWith("s") && token.length > 3) {
+    variants.add(token.slice(0, -1));
+  }
+  if (token.endsWith("ed") && token.length > 4) {
+    variants.add(token.slice(0, -2));
+  }
+  return Array.from(variants);
 }
 
 export function retrieveChunks(
@@ -248,8 +389,10 @@ export function retrieveChunks(
 
     let score = 0;
     for (const tok of tokens) {
-      if (haystackTokens.has(tok)) {
-        const keywordHits = keywordSet.has(tok) ? 1 : 0;
+      const variants = tokenVariants(tok);
+      const matched = variants.some((variant) => haystackTokens.has(variant));
+      if (matched) {
+        const keywordHits = variants.some((variant) => keywordSet.has(variant)) ? 1 : 0;
         score += 1 + 2 * keywordHits;
       }
     }

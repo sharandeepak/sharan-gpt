@@ -1,92 +1,64 @@
 import * as React from "react";
 import { ProfileHighlights } from "@/components/ProfileHighlights";
 import { ContactActions } from "@/components/ContactActions";
-import { PdfResumeViewer } from "@/components/PdfResumeViewer";
+import { ResumeCard } from "@/components/ResumeCard";
 import { cn } from "@/lib/utils";
+import type { Profile } from "@/types/profile";
 
-export interface ResumePanelProfile {
-  name: string;
-  displayRole: string;
-  location: string;
-  tagline: string;
-  contact: {
-    email: string;
-    phone: string;
-    linkedin: string | null;
-    github: string | null;
-    leetcode: string | null;
-  };
+export interface ResumePanelContact {
+  email: string;
+  phone: string;
+  linkedin: string | null;
+  github: string | null;
+  leetcode: string | null;
 }
 
 export interface ResumePanelProps {
-  profile: ResumePanelProfile;
-  resumeSrc?: string;
-  resumeDownloadHref?: string;
-  resumeFilename?: string;
-  pageCount?: number;
+  profile: Profile;
+  displayRole: string;
+  contact: ResumePanelContact;
+  resumeHref?: string;
   className?: string;
 }
 
-const DISPLAY_STACK = [
-  "Java",
-  "TypeScript",
-  "PostgreSQL",
-  "Elasticsearch",
-  "Redis",
-  "Docker",
-  "React Native / Expo",
-];
-
-const STRENGTHS = [
-  "Backend architecture",
-  "Performance optimization",
-  "Integrations",
-  "Mobile delivery",
-  "AI-assisted workflows",
-];
-
 export function ResumePanel({
   profile,
-  resumeSrc = "/resume.pdf",
-  resumeDownloadHref = "/resume.pdf",
-  resumeFilename = "Sharan-Deepak-RB-Resume.pdf",
-  pageCount,
+  displayRole,
+  contact,
+  resumeHref = "/resume.pdf",
   className,
 }: ResumePanelProps) {
+  const { candidate } = profile;
+
   return (
     <section
       aria-label="Resume"
-      className={cn(
-        "flex h-full min-h-0 flex-col gap-6 p-5 md:p-8",
-        className
-      )}
+      className={cn("flex h-full min-h-0 flex-col", className)}
     >
-      <ProfileHighlights
-        name={profile.name}
-        role={profile.displayRole}
-        location={profile.location}
-        tagline={profile.tagline}
-        stack={DISPLAY_STACK}
-        strengths={STRENGTHS}
-      />
-
-      <ContactActions
-        email={profile.contact.email}
-        phone={profile.contact.phone}
-        linkedin={profile.contact.linkedin}
-        github={profile.contact.github}
-        leetcode={profile.contact.leetcode}
-        resumeHref={resumeDownloadHref}
-      />
-
-      <div className="flex min-h-0 flex-1">
-        <PdfResumeViewer
-          src={resumeSrc}
-          downloadHref={resumeDownloadHref}
-          filename={resumeFilename}
-          pageCount={pageCount}
-          className="h-full w-full"
+      {/* Fixed header — name, role, contacts */}
+      <div className="shrink-0 px-5 pb-4 pt-5 md:px-8 md:pt-8">
+        <ProfileHighlights
+          name={candidate.name}
+          role={displayRole}
+          location={candidate.location}
         />
+        <div className="mt-4">
+          <ContactActions
+            email={contact.email}
+            phone={contact.phone}
+            linkedin={contact.linkedin}
+            github={contact.github}
+            leetcode={contact.leetcode}
+            resumeHref={resumeHref}
+          />
+        </div>
+      </div>
+
+      <div className="mx-5 shrink-0 border-t border-border md:mx-8" />
+
+      {/* Scrollable resume content */}
+      <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 md:px-8">
+        <ResumeCard profile={profile} />
       </div>
     </section>
   );
