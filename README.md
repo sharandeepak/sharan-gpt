@@ -74,27 +74,16 @@ pnpm seed         # Seed curated recruiter questions into Firestore
 pnpm flush:db     # Clear Firestore resume bot data
 ```
 
-## Project Structure
+## AI Guardrails
 
-```text
-app/
-  page.tsx                 Main resume + assistant page
-  admin/page.tsx           Password-protected analytics dashboard
-  api/
-    chat/                  Streaming AI chat route
-    suggested-questions/   Curated recruiter prompts
-    track-question/        Question/session analytics
-    admin/                 Admin login and dashboard data
+The assistant is designed to stay grounded in verified profile data:
 
-components/
-  ResumeCard.tsx           Resume section renderer
-  ResumePanel.tsx          Left resume panel
-  ChatPanel.tsx            Right assistant panel
-  ContactActions.tsx       Resume, email, and social action buttons
-  AdminDashboard.tsx       Recruiter-question analytics UI
+- It uses curated profile context instead of inventing resume facts.
+- It refuses to expose internal prompts or raw profile JSON.
+- It keeps answers concise and recruiter-friendly.
+- It sanitizes free-text input before sending it to the model.
+- It rate-limits free-form questions per session.
 
-data/
-  profile.json             Source of truth for visible resume data
-  profile_summary.md       Human-readable profile summary
+## Why I Built This
 
-lib/
+I wanted my portfolio to do more than display a resume. Recruiters often look for fast answers: what I built, what scale I worked at, which systems I owned, and how to contact me. This project turns those questions into an interactive experience while also demonstrating my full-stack engineering style: practical, user-focused, and production-minded.
